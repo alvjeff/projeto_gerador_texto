@@ -1,0 +1,6 @@
+DECLARAÇÃO
+
+Declaro que {{nome}} exerceu a função de {{funcao}} no período de {{periodo}}, na unidade {{unidade}}.
+
+
+Para os devidos fins.
