@@ -1,3 +1,4 @@
+from docx import Document
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 
@@ -28,8 +29,18 @@ output_dir = Path("output")
 output_dir.mkdir(exist_ok=True)
 
 #salva o arquivo (por enquanto txt)
-caminho = output_dir / f"{nome_arquivo}.txt"
+"""caminho = output_dir / f"{nome_arquivo}.txt"
 with open(caminho, "w", encoding="utf-8") as f:
     f.write(texto_final)
 
-print("\nDocumento gerado com sucesso em: {caminho}")
+print("\nDocumento gerado com sucesso em: {caminho}")"""
+
+#cria word
+doc = Document()
+for linha in texto_final.split("\n"):
+    doc.add_paragraph(linha)
+
+caminho = output_dir / f"{nome_arquivo}.docx"
+doc.save(caminho)
+
+print("f\nDocumento Word gerado com sucesso em: {caminho}")
