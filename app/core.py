@@ -1,49 +1,28 @@
 import os
-import sys
 from pathlib import Path
-from docx import Document
-from docx.shared import Pt
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from jinja2 import Environment, FileSystemLoader
+from docxtpl import DocxTemplate
 
+def gerar_declaracao(dados, nome_arquivo):
+    # 1. Localiza o modelo (Pasta templates na raiz do projeto)
+    # Usamos Path().resolve() para garantir que o Python ache o arquivo
+    template_path = Path.cwd() / "templates" / "template_modelo.docx"
+    
+    if not template_path.exists():
+        raise FileNotFoundError(f"Modelo não encontrado em: {template_path}")
 
-def resource_path(relative_path):
-    try:
-        base_path = sys._MEIPASS
-    except AttributeError:
-        base_path = Path(__file__).resolve().parent
+    # 2. Carrega o modelo Word
+    doc = DocxTemplate(str(template_path))
 
-    return Path(base_path) / relative_path
+    # 3. Preenche as variáveis (O render faz tudo de uma vez!)
+    # Os 'dados' devem ser um dicionário: {'nome': 'Arnold', 'data': '14/01'}
+    doc.render(dados)
 
-
-def gerar_documento(dados, nome_arquivo):
-    # carregar template
-    template_dir = resource_path("templates")
-    env = Environment(loader=FileSystemLoader(template_dir))
-    template = env.get_template("template.txt")
-    texto_final = template.render(dados)
-
-    # pasta de saída (onde o usuário estiver)
+    # 4. Define e cria a pasta de saída
     output_dir = Path.cwd() / "output"
     output_dir.mkdir(exist_ok=True)
 
-    # cria documento Word
-    doc = Document()
+    # 5. Salva o arquivo final
+    caminho_final = output_dir / f"{nome_arquivo}.docx"
+    doc.save(str(caminho_final))
 
-    titulo = doc.add_paragraph()
-    run = titulo.add_run("DECLARAÇÃO")
-    run.bold = True
-    run.font.size = Pt(14)
-    titulo.alignment = WD_ALIGN_PARAGRAPH.CENTER
-
-    doc.add_paragraph()
-
-    for linha in texto_final.split("\n"):
-        p = doc.add_paragraph(linha)
-        p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-        p.paragraph_format.space_after = Pt(12)
-
-    caminho = output_dir / f"{nome_arquivo}.docx"
-    doc.save(caminho)
-
-    return caminho
+    return caminho_final

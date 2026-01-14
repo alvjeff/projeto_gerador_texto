@@ -1,4 +1,18 @@
+# Ambiente virtual
 venv/
+.venv/
+
+# Python
 __pycache__/
 *.pyc
-.env
+
+# Saídas do projeto
+output/
+dist/
+build/
+*.spec
+
+# Sistema / editor
+.vscode/
+.DS_Store
+
